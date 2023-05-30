@@ -2,7 +2,18 @@
   "name": "md-toggle-checkbox-state",
   "displayName": "Markdown Toggle Checkbox State",
   "description": "Simple VS Code extension to toggle the state of markdown checkboxes",
-  "version": "0.0.1",
+  "license": "MIT",
+  "publisher": "OguzGelal",
+  "icon": "src/mdlogo.png",
+  "author": {
+    "name": "Oguz Gelal",
+    "email": "o.gelal77@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oguzgelal/vscode-md-toggle-checkbox-state"
+  },
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.78.0"
   },
