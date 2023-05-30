@@ -1,26 +1,104 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  // Handle toggle command
+  const handleToggleCommand = vscode.commands.registerCommand(
+    "md-toggle-checkbox-state.toggleCheckbox",
+    () => {
+      // if there is no active text editor, show message and return
+      if (!vscode.window.activeTextEditor) {
+        vscode.window.showInformationMessage("No active text editor");
+        return;
+      }
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "md-toggle-checkbox-state" is now active!');
+      // get current line text
+      const currentLineText = vscode.window.activeTextEditor.document.lineAt(
+        vscode.window.activeTextEditor.selection.active.line
+      ).text;
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('md-toggle-checkbox-state.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from MD Toggle Checkbox State!');
-	});
+      // detect symbol style
+      const hasStarStyle = currentLineText.indexOf("* [") === 0;
+      const hasPlusStyle = currentLineText.indexOf("+ [") === 0;
 
-	context.subscriptions.push(disposable);
+      // adhere to symbol convention if any
+      let symbol = "-";
+      if (hasStarStyle) {
+        symbol = "*";
+      } else if (hasPlusStyle) {
+        symbol = "+";
+      }
+
+      // detect checkbox state
+      const hasCheckbox = currentLineText.indexOf(`${symbol} [`) === 0;
+      const hasCheckboxUnchecked =
+        currentLineText.indexOf(`${symbol} [ ]`) === 0;
+      const hasCheckboxChecked = currentLineText.indexOf(`${symbol} [x]`) === 0;
+
+      // if there is no checkbox at the beginning of the line, add one
+      if (!hasCheckbox) {
+        vscode.window.activeTextEditor.edit((editBuilder) => {
+          if (!vscode.window.activeTextEditor) return;
+          editBuilder.insert(
+            new vscode.Position(
+              vscode.window.activeTextEditor.selection.active.line,
+              0
+            ),
+            `${symbol} [ ] `
+          );
+        });
+      }
+
+      // if there is an unchecked checkbox, check it
+      else if (hasCheckboxUnchecked) {
+        const hasSpaceAfter = currentLineText.indexOf(`${symbol} [ ] `) === 0;
+        vscode.window.activeTextEditor.edit((editBuilder) => {
+          if (!vscode.window.activeTextEditor) return;
+          editBuilder.replace(
+            new vscode.Range(
+              new vscode.Position(
+                vscode.window.activeTextEditor.selection.active.line,
+                0
+              ),
+              new vscode.Position(
+                vscode.window.activeTextEditor.selection.active.line,
+                hasSpaceAfter ? 6 : 5
+              )
+            ),
+            `${symbol} [x] `
+          );
+        });
+      }
+
+      // if there is a checked checkbox, remove checkbox syntax
+      else if (hasCheckboxChecked) {
+        const hasSpaceAfter = currentLineText.indexOf(`${symbol} [x] `) === 0;
+        vscode.window.activeTextEditor.edit((editBuilder) => {
+          if (!vscode.window.activeTextEditor) return;
+          editBuilder.replace(
+            new vscode.Range(
+              new vscode.Position(
+                vscode.window.activeTextEditor.selection.active.line,
+                0
+              ),
+              new vscode.Position(
+                vscode.window.activeTextEditor.selection.active.line,
+                hasSpaceAfter ? 6 : 5
+              )
+            ),
+            ""
+          );
+        });
+      }
+    }
+  );
+
+  // register toggle command
+  context.subscriptions.push(handleToggleCommand);
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+// this method is called when your extension is deactivated
+export function deactivate() {
+  vscode.window.showInformationMessage(
+    "'MD Toggle Checkbox State' is now deactivated!"
+  );
+}

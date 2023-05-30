@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "md-toggle-checkbox-state.helloWorld",
-        "title": "Hello World"
+        "command": "md-toggle-checkbox-state.toggleCheckbox",
+        "title": "Toggle Checkbox"
       }
     ]
   },
