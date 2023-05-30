@@ -16,23 +16,10 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.activeTextEditor.selection.active.line
       ).text;
 
-      // detect symbol style
-      const hasStarStyle = currentLineText.indexOf("* [") === 0;
-      const hasPlusStyle = currentLineText.indexOf("+ [") === 0;
-
-      // adhere to symbol convention if any
-      let symbol = "-";
-      if (hasStarStyle) {
-        symbol = "*";
-      } else if (hasPlusStyle) {
-        symbol = "+";
-      }
-
       // detect checkbox state
-      const hasCheckbox = currentLineText.indexOf(`${symbol} [`) === 0;
-      const hasCheckboxUnchecked =
-        currentLineText.indexOf(`${symbol} [ ]`) === 0;
-      const hasCheckboxChecked = currentLineText.indexOf(`${symbol} [x]`) === 0;
+      const hasCheckbox = currentLineText.indexOf(`- [`) === 0;
+      const hasCheckboxUnchecked = currentLineText.indexOf(`- [ ]`) === 0;
+      const hasCheckboxChecked = currentLineText.indexOf(`- [x]`) === 0;
 
       // if there is no checkbox at the beginning of the line, add one
       if (!hasCheckbox) {
@@ -43,14 +30,14 @@ export function activate(context: vscode.ExtensionContext) {
               vscode.window.activeTextEditor.selection.active.line,
               0
             ),
-            `${symbol} [ ] `
+            "- [ ] "
           );
         });
       }
 
       // if there is an unchecked checkbox, check it
       else if (hasCheckboxUnchecked) {
-        const hasSpaceAfter = currentLineText.indexOf(`${symbol} [ ] `) === 0;
+        const hasSpaceAfter = currentLineText.indexOf("- [ ] ") === 0;
         vscode.window.activeTextEditor.edit((editBuilder) => {
           if (!vscode.window.activeTextEditor) return;
           editBuilder.replace(
@@ -64,14 +51,14 @@ export function activate(context: vscode.ExtensionContext) {
                 hasSpaceAfter ? 6 : 5
               )
             ),
-            `${symbol} [x] `
+            "- [x] "
           );
         });
       }
 
       // if there is a checked checkbox, remove checkbox syntax
       else if (hasCheckboxChecked) {
-        const hasSpaceAfter = currentLineText.indexOf(`${symbol} [x] `) === 0;
+        const hasSpaceAfter = currentLineText.indexOf("- [x] ") === 0;
         vscode.window.activeTextEditor.edit((editBuilder) => {
           if (!vscode.window.activeTextEditor) return;
           editBuilder.replace(
@@ -92,7 +79,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  // register toggle command
+  // register disposables
   context.subscriptions.push(handleToggleCommand);
 }
 

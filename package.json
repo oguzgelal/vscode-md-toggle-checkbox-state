@@ -4,7 +4,7 @@
   "description": "Simple VS Code extension to toggle the state of markdown checkboxes",
   "license": "MIT",
   "publisher": "OguzGelal",
-  "icon": "src/mdlogo.png",
+  "icon": "mdlogo.png",
   "author": {
     "name": "Oguz Gelal",
     "email": "o.gelal77@gmail.com"
