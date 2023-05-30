@@ -1,7 +1,7 @@
 {
   "name": "md-toggle-checkbox-state",
-  "displayName": "MD Toggle Checkbox State",
-  "description": "Simple extension to toggle the state of markdown checkboxes",
+  "displayName": "Markdown Toggle Checkbox State",
+  "description": "Simple VS Code extension to toggle the state of markdown checkboxes",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.78.0"
